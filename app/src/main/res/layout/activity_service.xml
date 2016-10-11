@@ -67,7 +67,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/textView3"
                         android:textSize="@dimen/h_button"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:textStyle="normal|bold" />
 
                     <TextView
                         android:text="@string/name"
@@ -90,7 +91,8 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/textView5"
                         android:textSize="@dimen/h_button"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:textStyle="normal|bold" />
 
                     <TextView
                         android:text="@string/license"

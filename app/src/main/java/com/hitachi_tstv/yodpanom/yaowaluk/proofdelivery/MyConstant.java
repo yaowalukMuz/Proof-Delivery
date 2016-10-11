@@ -10,6 +10,12 @@ public class MyConstant {
     private String titleHaveSpaceString = "มีช่องว่าง";
     private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง ค่ะ!";
 
+    private  String urlUserString  = "http://service.eternity.co.th/TmsPXD/app/CenterService/getUser.php";
+
+
+    public String getUrlUserString() {
+        return urlUserString;
+    }
 
     public int getIconAnInt() {
         return iconAnInt;

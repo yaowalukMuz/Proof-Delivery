@@ -13,5 +13,6 @@
     <dimen name="margin">10dp</dimen>
     <dimen name="block">300dp</dimen>
     <dimen name="padding">20dp</dimen>
+    <dimen name="icon_size">100dp</dimen>
 
 </resources>

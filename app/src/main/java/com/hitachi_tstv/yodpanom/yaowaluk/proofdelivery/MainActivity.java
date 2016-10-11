@@ -1,6 +1,7 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,10 @@ import android.widget.EditText;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.internal.Internal;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,8 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
     //Create Inner Class
     private class SynUser extends AsyncTask<String, Void, String> {
+        //Explicit
 
         private Context context;
+        private boolean aBoolean = true;//User false
+        private String[] logingStrings = new String[2]; //for User success login
+        private String[] columLoginStrings;
+        private String truePasswordString;
 
         public SynUser(Context context) {
             this.context = context;
@@ -94,6 +104,55 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             Log.d("11octV1", "JSON---->" + s);
+            MyConstant myConstant = new MyConstant();
+            columLoginStrings = myConstant.getColumLogin();
+
+            // using JSON Array
+            try {
+                JSONArray jsonArray = new JSONArray(s);
+                for(int i = 0; i<jsonArray.length();i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    if (userString.equals(jsonObject.getString("drv_username"))) {
+                        aBoolean = !aBoolean;
+                        for (int i1 = 0; i1 < logingStrings.length; i1++) {
+                            logingStrings[i1] = jsonObject.getString(columLoginStrings[i1]);
+                            Log.d("11octV2", "LoginString(" + i1 + ")=" + logingStrings[i1]);
+                            truePasswordString = jsonObject.getString("drv_password");
+
+                        }//end for i1
+
+                    } //end if
+
+                }   // end for  i
+
+                if (aBoolean) {
+                    MyAlert myAlert = new MyAlert(context);
+                    myAlert.myErrorDialog(myConstant.getIconAnInt(),
+                                            myConstant.getTitleUserFalesString(),
+                                            myConstant.getMessageUserFalesString());
+
+                }else if (!passwordString.equals(truePasswordString)) {
+                    //password false
+                    MyAlert myAlert = new MyAlert(context);
+                    myAlert.myErrorDialog(myConstant.getIconAnInt(),
+                                            myConstant.getTitlePasswordFalse(),
+                                            myConstant.getMessagePasswordFalse());
+                } else {
+                    //password true
+                    Intent intent = new Intent(MainActivity.this, ServiceActivity.class);
+                    intent.putExtra("Login", logingStrings);
+                    startActivity(intent);
+                    finish();
+
+
+                }
+
+            } catch (Exception e) {
+                Log.d("11octV1", "e onPost-->" + e.toString());
+            }
+
+
+
         }   //onPost
 
     }   //SynUser Class

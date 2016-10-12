@@ -24,41 +24,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linTopDetail"
-        android:padding="5pd">
+        android:padding="5dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView14"
-            android:textSize="@dimen/h3"
+            android:textSize="@dimen/h2"
             android:padding="5dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView15"
-            android:textSize="@dimen/h3"
+            android:textSize="@dimen/h2"
             android:padding="5dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView16"
-            android:textSize="@dimen/h3"
+            android:textSize="@dimen/h2"
             android:padding="5dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView17"
-            android:textSize="@dimen/h3"
+            android:textSize="@dimen/h2"
             android:padding="5dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView18"
-            android:textSize="@dimen/h3"
+            android:textSize="@dimen/h2"
             android:padding="5dp" />
 
     </LinearLayout>

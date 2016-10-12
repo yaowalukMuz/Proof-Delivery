@@ -1,10 +1,12 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -21,7 +23,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class DetailJob extends AppCompatActivity {
+public class DetailJob extends AppCompatActivity implements View.OnClickListener {
     //Explicit
     private TextView jobNoTextView,storeCodeTextView, storeNameTextView, arrivalTextView, intentToCallTextView;
     private ListView listView;
@@ -46,8 +48,55 @@ public class DetailJob extends AppCompatActivity {
         SynData synData = new SynData(DetailJob.this);
         synData.execute(myConstant.getUrlDetailWherePlanId(),planDtl2_id);
 
+        //Get Event from Click Button or Image
+        firstImageView.setOnClickListener(DetailJob.this);
+        secondImageView.setOnClickListener(DetailJob.this);
+        thirdImageView.setOnClickListener(DetailJob.this);
+        arrivalButton.setOnClickListener(DetailJob.this);
+        takeImageButton.setOnClickListener(DetailJob.this);
+        confirmButton.setOnClickListener(DetailJob.this);
+        signatureButton.setOnClickListener(DetailJob.this);
+
+
+
 
     }   //Main method
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.imageView3:
+
+                break;
+            case R.id.imageView4:
+
+                break;
+            case R.id.imageView5:
+
+                break;
+            case R.id.button4:
+
+                break;
+            case R.id.button5:  //Take Photo
+                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+               startActivityForResult(intent,0);
+
+
+                break;
+            case R.id.button6:
+
+                break;
+            case R.id.button7:
+
+                break;
+
+        }
+    } //onClick
 
     private class SynData extends AsyncTask<String, Void, String> {
         //Explicit
@@ -74,8 +123,9 @@ public class DetailJob extends AppCompatActivity {
 
             } catch (Exception e) {
                 Log.d("12OctV4", "e-->doInBack" + e.toString());
+                return null;
             }
-            return null;
+
 
 
 

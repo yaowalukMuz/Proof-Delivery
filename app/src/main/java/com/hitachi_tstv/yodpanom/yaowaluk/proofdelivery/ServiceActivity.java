@@ -15,6 +15,9 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class ServiceActivity extends AppCompatActivity {
 
     //Explicit
@@ -23,7 +26,8 @@ public class ServiceActivity extends AppCompatActivity {
     private ListView  listView;
     private String[] loginStrings;
     private MyConstant myConstant = new MyConstant();
-
+    private  String[] planDateStrings, cntStoreStrings;
+    private Boolean aBoolean = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,26 @@ public class ServiceActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             Log.d("12OctV1", "JSON--->" + s);
+            try {
+                JSONArray jsonArray = new JSONArray(s);
+                planDateStrings = new String[jsonArray.length()];
+                cntStoreStrings = new String[jsonArray.length()];
+
+                for (int i=0;i<jsonArray.length();i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    planDateStrings[i] = jsonObject.getString("planDate");
+                    cntStoreStrings[i] = jsonObject.getString("cnt_store");
+                }// for
+
+                if (aBoolean) {
+                //True : not click on button
+                    jobListButton.setText("Job List : " + planDateStrings[0]);
+                }
+
+
+            } catch (Exception e) {
+                Log.d("12OctV1", "e onPost-->" + e.toString());
+            }
 
 
         }   //onPost

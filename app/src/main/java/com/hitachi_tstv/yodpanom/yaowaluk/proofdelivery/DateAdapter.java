@@ -14,14 +14,14 @@ import android.widget.TextView;
 public class DateAdapter extends BaseAdapter{
     //Explicit
     private Context context;
-    private String[] dateStrings,storeStrings;
+    private String[] dateStrings,storeStrings,planIdStrings;
 
-    public DateAdapter(Context context, String[] dateStrings, String[] storeStrings) {
+    public DateAdapter(Context context, String[] dateStrings, String[] storeStrings, String[] planIdStrings) {
         this.context = context;
         this.dateStrings = dateStrings;
         this.storeStrings = storeStrings;
+        this.planIdStrings = planIdStrings;
     }
-
 
     @Override
     public int getCount() {
@@ -51,7 +51,7 @@ public class DateAdapter extends BaseAdapter{
 
         //ShowView
 
-        dateTextView.setText("Date :" + dateStrings[position]);
+        dateTextView.setText("Date :" + planIdStrings[position]);
         storeTextView.setText("Amt Sto");
 
 

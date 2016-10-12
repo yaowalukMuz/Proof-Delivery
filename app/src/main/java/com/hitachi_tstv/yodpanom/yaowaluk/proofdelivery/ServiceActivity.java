@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ public class ServiceActivity extends AppCompatActivity {
     private String[] planDateStrings, cntStoreStrings, planIdStrings;
     private Boolean aBoolean = true;
     private String[] workSheetStrings,storeNameStrings,planArrvalTimeStrings, planDtl2_idStrings;
+    private String driverChooseString, dateChooseString ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,14 @@ public class ServiceActivity extends AppCompatActivity {
         // Get value from Inten
 
         loginStrings = getIntent().getStringArrayExtra("Login");
+        driverChooseString = getIntent().getStringExtra("PlanId");
+       dateChooseString = getIntent().getStringExtra("Date");
+
+        if (driverChooseString.length() != 0) {
+            //From MainActivity
+            aBoolean = false;
+        }
+
 
         //Show name
         nameDriverTextView.setText(loginStrings[1]);
@@ -67,7 +77,11 @@ public class ServiceActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
     }   //Main method
+
+
 
     //syn
     private class SynDataWhereByDriverID extends AsyncTask<String, Void, String> {
@@ -122,9 +136,11 @@ public class ServiceActivity extends AppCompatActivity {
                     jobListButton.setText("Job List : " + planDateStrings[0]);
 
                     CreateDetailList(planIdStrings[0]);
-
-
-                }// IF
+                } else {
+                    // false : From JobListView
+                    jobListButton.setText("Job List : " + dateChooseString);
+                    CreateDetailList(driverChooseString);
+                }
 
                 //Get Event From Click
                 jobListButton.setOnClickListener(new View.OnClickListener() {
@@ -133,8 +149,10 @@ public class ServiceActivity extends AppCompatActivity {
                         Intent intent = new Intent(ServiceActivity.this, JobListView.class);
                         intent.putExtra("Date", planDateStrings);
                         intent.putExtra("Store", cntStoreStrings);
-                        intent.putExtra("Id", planIdStrings);
+                        intent.putExtra("PlanId", planIdStrings);
+                        intent.putExtra("Login", loginStrings);
                         startActivity(intent);
+                        finish();
                     }
                 });
 
@@ -211,6 +229,15 @@ public class ServiceActivity extends AppCompatActivity {
                 }   // for
                 DetailAdapter detailAdapter = new DetailAdapter(context, workSheetStrings, storeNameStrings, planArrvalTimeStrings);
                 listView.setAdapter(detailAdapter);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(ServiceActivity.this, DetailJob.class);
+                        intent.putExtra("Login", loginStrings);
+                        intent.putExtra("planDtl2_id", planDtl2_idStrings[position]);
+
+                    }
+                });
 
             } catch (Exception e) {
                 Log.d("12OctV2", "e onPost-->" + e.toString());

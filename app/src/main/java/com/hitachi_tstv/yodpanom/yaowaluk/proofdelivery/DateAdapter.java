@@ -52,7 +52,7 @@ public class DateAdapter extends BaseAdapter{
         //ShowView
 
         dateTextView.setText("Date :" + dateStrings[position]);
-        storeTextView.setText("Amt Store :" + dateStrings[position]);
+        storeTextView.setText("Amt Sto");
 
 
         return view;

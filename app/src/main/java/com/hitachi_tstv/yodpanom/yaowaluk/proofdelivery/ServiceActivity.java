@@ -23,12 +23,12 @@ import org.json.JSONObject;
 public class ServiceActivity extends AppCompatActivity {
 
     //Explicit
-    private TextView nameDriverTextView,idDriverTextView;
+    private TextView nameDriverTextView, idDriverTextView;
     private Button jobListButton, closeButton;
-    private ListView  listView;
+    private ListView listView;
     private String[] loginStrings;
     private MyConstant myConstant = new MyConstant();
-    private  String[] planDateStrings, cntStoreStrings;
+    private String[] planDateStrings, cntStoreStrings, planIdStrings;
     private Boolean aBoolean = true;
 
     @Override
@@ -57,7 +57,15 @@ public class ServiceActivity extends AppCompatActivity {
         synDataWhereByDriverID.execute(myConstant.getUrlDataWhereDriverId());
 
 
+        //Close Controller
+        closeButton.setOnClickListener(new View.OnClickListener() {
 
+
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }   //Main method
 
     //syn
@@ -99,29 +107,35 @@ public class ServiceActivity extends AppCompatActivity {
                 JSONArray jsonArray = new JSONArray(s);
                 planDateStrings = new String[jsonArray.length()];
                 cntStoreStrings = new String[jsonArray.length()];
+                planIdStrings = new String[jsonArray.length()];
 
-                for (int i=0;i<jsonArray.length();i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     planDateStrings[i] = jsonObject.getString("planDate");
                     cntStoreStrings[i] = jsonObject.getString("cnt_store");
+                    planIdStrings[i] = jsonObject.getString("planId");
                 }// for
 
                 if (aBoolean) {
-                //True : not click on button
+                    //True : not click on button
                     jobListButton.setText("Job List : " + planDateStrings[0]);
-                }
+
+                    CreateDetailList(planIdStrings[0]);
+
+
+                }// IF
 
                 //Get Event From Click
                 jobListButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(ServiceActivity.this, JobListView.class);
-                        intent.putExtra("Date",planDateStrings);
+                        intent.putExtra("Date", planDateStrings);
                         intent.putExtra("Store", cntStoreStrings);
+                        intent.putExtra("Id", planIdStrings);
                         startActivity(intent);
                     }
                 });
-
 
 
             } catch (Exception e) {
@@ -131,6 +145,54 @@ public class ServiceActivity extends AppCompatActivity {
 
         }   //onPost
     }  //SynDataWhereByDriverID
+
+    private void CreateDetailList(String planIdString) {
+
+        SynDetail synDetail = new SynDetail(ServiceActivity.this, planIdString);
+        synDetail.execute(myConstant.getUrlDataWhereDriverIdanDate());
+
+    }//Create Detail List
+
+    private class SynDetail extends AsyncTask<String, Void, String> {
+
+        //Explicit
+        private Context context;
+        private String planIdString, planDateString;
+
+        public SynDetail(Context context, String planIdString) {
+            this.context = context;
+            this.planIdString = planIdString;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                OkHttpClient okHttpClient = new OkHttpClient();
+                RequestBody requestBody = new FormEncodingBuilder()
+                        .add("isAdd", "true")
+                        .add("planId", planIdString)
+                        .add("driver_id", loginStrings[0])
+                        .build();
+                Request.Builder builder = new Request.Builder();
+                Request request = builder.url(params[0]).post(requestBody).build();
+                Response response = okHttpClient.newCall(request).execute();
+
+                return response.body().string();
+            } catch (Exception e) {
+                Log.d("12oCt2", "e doInback-->" + e.toString());
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            Log.d("12OctV2", "JSON-->" + s);
+
+        }
+    }   //SynDetail
 
 
 }   //Main  Class

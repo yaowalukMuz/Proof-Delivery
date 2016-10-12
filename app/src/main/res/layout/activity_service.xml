@@ -44,7 +44,7 @@
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="@dimen/icon_size"
-                app:srcCompat="@drawable/doremon48"
+                app:srcCompat="@drawable/male48"
                 android:id="@+id/imageView"
                 android:layout_weight="1"
                 android:layout_margin="@dimen/margin" />
@@ -112,7 +112,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/button3"
-            android:background="@android:drawable/button_onoff_indicator_on" />
+            android:background="#82f8e181" />
 
         <LinearLayout
             android:orientation="horizontal"

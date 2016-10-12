@@ -18,6 +18,11 @@ public class MyConstant {
     private String titlePasswordFalse = "Password ผิด";
     private String messagePasswordFalse = "กรุณาลองใหม่ Passwordผิด";
     private String urlDataWhereDriverIdanDate = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlanDtl.php";
+    private String urlDetailWherePlanId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl1.php";
+
+    public String getUrlDetailWherePlanId() {
+        return urlDetailWherePlanId;
+    }
 
     public String getUrlDataWhereDriverId() {
         return urlDataWhereDriverId;

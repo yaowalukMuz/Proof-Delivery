@@ -229,13 +229,13 @@ public class ServiceActivity extends AppCompatActivity {
                 }   // for
                 DetailAdapter detailAdapter = new DetailAdapter(context, workSheetStrings, storeNameStrings, planArrvalTimeStrings);
                 listView.setAdapter(detailAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         Intent intent = new Intent(ServiceActivity.this, DetailJob.class);
                         intent.putExtra("Login", loginStrings);
-                        intent.putExtra("planDtl2_id", planDtl2_idStrings[position]);
-
+                        intent.putExtra("planDtl2_id", planDtl2_idStrings[i]);
+                        startActivity(intent);
                     }
                 });
 

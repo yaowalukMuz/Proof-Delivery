@@ -3,6 +3,7 @@ package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SyncAdapterType;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -23,7 +24,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -34,6 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,9 +51,10 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
     private ImageView firstImageView, secondImageView, thirdImageView;
     private Button arrivalButton, takeImageButton, confirmButton,signatureButton;
     private MyConstant myConstant = new MyConstant();
-    private String planDtl2_id, pathFirstImageString;
+    private String planDtl2_id, pathFirstImageString,driverUserNameString,getTimeDate;
     private LocationManager locationManager;
     private Criteria criteria;
+    private String[] loginStrings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +66,18 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
         // Get value From Inten
         planDtl2_id = getIntent().getStringExtra("planDtl2_id");
+        loginStrings  = getIntent().getStringArrayExtra("Login");
+        driverUserNameString = loginStrings[2];
 
-        //Load data
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        getTimeDate = dateFormat.format(date);
+
+
+
+
+
+                //Load data
         SynData synData = new SynData(DetailJob.this);
         synData.execute(myConstant.getUrlDetailWherePlanId(),planDtl2_id);
 
@@ -172,17 +188,21 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                     strLng = String.format("%.7f", gpsLocation.getLongitude());
                 }
 
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date();
-                String getTimeDate = dateFormat.format(date);
-
-                if(strLat.equals("Unknown")&&strLng.equals("Unknown")){
 
 
+
+                if(strLat.equals("Unknown") && strLng.equals("Unknown")){
+                    Toast.makeText(this,"Failure Lat/Lng is Unknown",Toast.LENGTH_SHORT).show();
+                }else{
+                    Log.d("13OctV1", " ++++++++++Latitue.-> " + strLat + " Longitue.-> " + strLng);
+                    SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
+                    synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString);
+
+                    Toast.makeText(this,"Update To Server success",Toast.LENGTH_SHORT).show();
                 }
 
 
-                Log.d("13OctV1", " ++++++++++Latitue.-> " + strLat + " Longitue.-> " + strLng);
+
 
 
 
@@ -262,6 +282,55 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
         }   //OnPost
     }
+
+    //Syn  GPS TO SERVER
+    private class SynGPStoServer extends AsyncTask<String, Void, String> {
+
+        //Explicit
+        private Context context;
+
+        public SynGPStoServer(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                OkHttpClient okHttpClient = new OkHttpClient();
+                RequestBody requestBody = new FormEncodingBuilder()
+                        .add("isAdd","true")
+                        .add("Lat",params[1])
+                        .add("Lng",params[2])
+                        .add("stamp",params[3])
+                        .add("drv_username",params[4])
+                        .add("planDtl2_id",planDtl2_id)
+                        .build();
+                Request.Builder builder = new Request.Builder();
+                Request request = builder.url(params[0]).post(requestBody).build();
+                Response response = okHttpClient.newCall(request).execute();
+               return  response.body().string();
+            } catch (Exception e) {
+                Log.d("13OctV1", "doInBackSynGPS--->" + e.toString());
+                return null;
+            }
+
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            Log.d("13OctV1", "JSON__GPS->" + s);
+            if(s.equals("SUCCESS")){
+
+            }else{
+
+            }
+
+        }   //onPostExcute
+    }// Class Syn GPS TO SERVER
 
 
 
@@ -348,4 +417,6 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
 
     }   // setupLocation
+
+
 }//Main Class

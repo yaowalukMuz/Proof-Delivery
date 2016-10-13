@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         private Context context;
         private boolean aBoolean = true;//User false
-        private String[] logingStrings = new String[2]; //for User success login
+        private String[] logingStrings = new String[3]; //for User success login
         private String[] columLoginStrings;
         private String truePasswordString;
 

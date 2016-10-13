@@ -12,13 +12,18 @@ public class MyConstant {
 
     private  String urlUserString  = "http://service.eternity.co.th/TmsPXD/app/CenterService/getUser.php";
     private String urlDataWhereDriverId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlan.php";
-    private String[] columLogin = new String[]{"drv_id","drv_name"};
+    private String[] columLogin = new String[]{"drv_id","drv_name","drv_username"};
     private String titleUserFalesString = "User False";
     private String messageUserFalesString = "ไม่มี User นี้ในฐานข้อมูลของเรา";
     private String titlePasswordFalse = "Password ผิด";
     private String messagePasswordFalse = "กรุณาลองใหม่ Passwordผิด";
     private String urlDataWhereDriverIdanDate = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlanDtl.php";
     private String urlDetailWherePlanId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl1.php";
+    private String urlArrivalGPS = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateArrivalFromDriver.php";
+
+    public String getUrlArrivalGPS() {
+        return urlArrivalGPS;
+    }
 
     public String getUrlDetailWherePlanId() {
         return urlDetailWherePlanId;

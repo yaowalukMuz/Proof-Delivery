@@ -33,7 +33,9 @@
         <activity
             android:name=".DetailJob"
             android:screenOrientation="portrait" />
-        <activity android:name=".DegitalSignatureActivity"></activity>
+        <activity
+            android:name=".DegitalSignatureActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

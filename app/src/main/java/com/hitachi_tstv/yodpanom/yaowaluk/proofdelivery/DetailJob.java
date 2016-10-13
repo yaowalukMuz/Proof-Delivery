@@ -46,15 +46,16 @@ import java.util.List;
 
 public class DetailJob extends AppCompatActivity implements View.OnClickListener {
     //Explicit
-    private TextView jobNoTextView,storeCodeTextView, storeNameTextView, arrivalTextView, intentToCallTextView;
+    private TextView jobNoTextView, storeCodeTextView, storeNameTextView, arrivalTextView, intentToCallTextView;
     private ListView listView;
     private ImageView firstImageView, secondImageView, thirdImageView;
-    private Button arrivalButton, takeImageButton, confirmButton,signatureButton;
+    private Button arrivalButton, takeImageButton, confirmButton, signatureButton, contractButton;
     private MyConstant myConstant = new MyConstant();
-    private String planDtl2_id, pathFirstImageString,driverUserNameString,getTimeDate;
+    private String planDtl2_id, pathFirstImageString, driverUserNameString, getTimeDate;
     private LocationManager locationManager;
     private Criteria criteria;
     private String[] loginStrings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +67,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
         // Get value From Inten
         planDtl2_id = getIntent().getStringExtra("planDtl2_id");
-        loginStrings  = getIntent().getStringArrayExtra("Login");
+        loginStrings = getIntent().getStringArrayExtra("Login");
         driverUserNameString = loginStrings[2];
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -74,12 +75,9 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         getTimeDate = dateFormat.format(date);
 
 
-
-
-
-                //Load data
+        //Load data
         SynData synData = new SynData(DetailJob.this);
-        synData.execute(myConstant.getUrlDetailWherePlanId(),planDtl2_id);
+        synData.execute(myConstant.getUrlDetailWherePlanId(), planDtl2_id);
 
         //Get Event from Click Button or Image
         firstImageView.setOnClickListener(DetailJob.this);
@@ -89,8 +87,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         takeImageButton.setOnClickListener(DetailJob.this);
         confirmButton.setOnClickListener(DetailJob.this);
         signatureButton.setOnClickListener(DetailJob.this);
-
-
+        contractButton.setOnClickListener(DetailJob.this);
 
 
     }   //Main method
@@ -103,7 +100,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                 if (resultCode == RESULT_OK) {
                     Log.d("12OctV6", "Take Photo save Success");
                 }
-             break;
+                break;
             case 1: //From Click firstImage
                 if (resultCode == RESULT_OK) {
 
@@ -120,9 +117,9 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                         e.printStackTrace();
                     }
 
-                   // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
+                    // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
 
-                   // firstImageView.setImageURI(uri);
+                    // firstImageView.setImageURI(uri);
                 }
 
 
@@ -155,14 +152,13 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
     }   // MyFindPathImage
 
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imageView3:
                 Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
                 intent1.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent1,"Please choose photo"),1);
+                startActivityForResult(Intent.createChooser(intent1, "Please choose photo"), 1);
 
 
                 break;
@@ -189,36 +185,46 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
                 }
 
 
-
-
-                if(strLat.equals("Unknown") && strLng.equals("Unknown")){
-                    Toast.makeText(this,"Failure Lat/Lng is Unknown",Toast.LENGTH_SHORT).show();
-                }else{
+                if (strLat.equals("Unknown") && strLng.equals("Unknown")) {
+                    Toast.makeText(this, "Failure Lat/Lng is Unknown", Toast.LENGTH_SHORT).show();
+                } else {
                     Log.d("13OctV1", " ++++++++++Latitue.-> " + strLat + " Longitue.-> " + strLng);
                     SynGPStoServer synGPStoServer = new SynGPStoServer(DetailJob.this);
                     synGPStoServer.execute(myConstant.getUrlArrivalGPS(), strLat, strLng, getTimeDate, driverUserNameString);
 
-                    Toast.makeText(this,"Update To Server success",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Update To Server success", Toast.LENGTH_SHORT).show();
                 }
-
-
-
-
-
 
                 break;
             case R.id.button5:  //Take Photo
                 Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-               startActivityForResult(intent,0);
+                startActivityForResult(intent, 0);
 
-               // Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-              //  startActivityForResult(i, RESULT_LOAD_IMAGE);
+                // Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                //  startActivityForResult(i, RESULT_LOAD_IMAGE);
 
                 break;
             case R.id.button6:
 
                 break;
             case R.id.button7:
+
+                break;
+            case R.id.button8:
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:0843524145"));
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                startActivity(callIntent);
+
 
                 break;
 
@@ -351,6 +357,7 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
         takeImageButton = (Button) findViewById(R.id.button5);
         confirmButton = (Button) findViewById(R.id.button6);
         signatureButton = (Button) findViewById(R.id.button7);
+        contractButton = (Button) findViewById(R.id.button8);
     }
 
 

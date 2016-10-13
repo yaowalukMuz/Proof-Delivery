@@ -61,11 +61,11 @@
             android:textSize="@dimen/h2"
             android:padding="5dp" />
 
-        <TextView
-            android:text="1"
-            android:layout_width="match_parent"
+        <Button
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:id="@+id/textView19" />
+            android:id="@+id/button8"
+            android:background="@android:drawable/ic_menu_call" />
 
     </LinearLayout>
 

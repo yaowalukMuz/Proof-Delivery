@@ -52,7 +52,7 @@ public class ServiceActivity extends AppCompatActivity {
 
         loginStrings = getIntent().getStringArrayExtra("Login");
         driverChooseString = getIntent().getStringExtra("PlanId");
-       dateChooseString = getIntent().getStringExtra("Date");
+        dateChooseString = getIntent().getStringExtra("Date");
 
         if (driverChooseString.length() != 0) {
             //From MainActivity

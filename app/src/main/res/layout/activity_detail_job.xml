@@ -61,6 +61,12 @@
             android:textSize="@dimen/h2"
             android:padding="5dp" />
 
+        <TextView
+            android:text="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView19" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -76,21 +82,21 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/female48"
                 android:id="@+id/imageView3"
                 android:layout_weight="1" />
 
             <ImageView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/male48"
                 android:id="@+id/imageView4"
                 android:layout_weight="1" />
 
             <ImageView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/doremon48"
                 android:id="@+id/imageView5"

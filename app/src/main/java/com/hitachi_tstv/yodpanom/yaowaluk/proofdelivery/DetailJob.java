@@ -1,8 +1,20 @@
 package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +33,10 @@ import com.squareup.okhttp.Response;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class DetailJob extends AppCompatActivity implements View.OnClickListener {
@@ -30,8 +46,9 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
     private ImageView firstImageView, secondImageView, thirdImageView;
     private Button arrivalButton, takeImageButton, confirmButton,signatureButton;
     private MyConstant myConstant = new MyConstant();
-    private String planDtl2_id;
-
+    private String planDtl2_id, pathFirstImageString;
+    private LocationManager locationManager;
+    private Criteria criteria;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +83,33 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case 0:
+            case 0: // From  Take Photo
                 if (resultCode == RESULT_OK) {
                     Log.d("12OctV6", "Take Photo save Success");
                 }
              break;
-            case 1:
+            case 1: //From Click firstImage
+                if (resultCode == RESULT_OK) {
+
+                    Log.d("12OctV6", "Choose Photo Success");
+                    Uri uri = data.getData();
+                    pathFirstImageString = myFindPathImage(uri);
+                    Log.d("12OctV5", "Path-->" + pathFirstImageString);
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+                        firstImageView.setImageBitmap(bitmap);
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                   // firstImageView.setImageBitmap(BitmapFactory.decodeFile(pathFirstImageString));
+
+                   // firstImageView.setImageURI(uri);
+                }
+
+
                 break;
             case 2:
                 break;
@@ -84,10 +122,32 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
     }//OnActivityResult
 
+    private String myFindPathImage(Uri uri) {
+        String result = null;
+        String[] strings = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(uri, strings, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            result = cursor.getString(index);
+        } else {
+            result = uri.getPath();
+        }
+
+        return result;
+
+    }   // MyFindPathImage
+
+
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imageView3:
+                Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
+                intent1.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent1,"Please choose photo"),1);
+
 
                 break;
             case R.id.imageView4:
@@ -96,13 +156,43 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
             case R.id.imageView5:
 
                 break;
-            case R.id.button4:
+            case R.id.button4:// Arrival BTN
+                String strLat = "Unknown";
+                String strLng = "Unknown";
+                setupLocation();
+                Location networkLocation = requestLocation(LocationManager.NETWORK_PROVIDER, "No Internet");
+                if (networkLocation != null) {
+                    strLat = String.format("%.7f", networkLocation.getLatitude());
+                    strLng = String.format("%.7f", networkLocation.getLongitude());
+                }
+
+                Location gpsLocation = requestLocation(LocationManager.GPS_PROVIDER, "No GPS card");
+                if (gpsLocation != null) {
+                    strLat = String.format("%.7f", gpsLocation.getLatitude());
+                    strLng = String.format("%.7f", gpsLocation.getLongitude());
+                }
+
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date();
+                String getTimeDate = dateFormat.format(date);
+
+                if(strLat.equals("Unknown")&&strLng.equals("Unknown")){
+
+
+                }
+
+
+                Log.d("13OctV1", " ++++++++++Latitue.-> " + strLat + " Longitue.-> " + strLng);
+
+
 
                 break;
             case R.id.button5:  //Take Photo
                 Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
                startActivityForResult(intent,0);
 
+               // Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+              //  startActivityForResult(i, RESULT_LOAD_IMAGE);
 
                 break;
             case R.id.button6:
@@ -195,4 +285,67 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
     }
 
 
+    public Location requestLocation(String strProvider, String strError) {
+
+        Location location = null;
+
+        if (locationManager.isProviderEnabled(strProvider)) {
+
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return null;
+            }
+            locationManager.requestLocationUpdates(strProvider, 1000, 10, locationListener);
+            location = locationManager.getLastKnownLocation(strProvider);
+
+        } else {
+            Log.d("GPS", strError);
+        }
+
+
+        return location;
+    }
+
+
+    public final LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+//            latTextView.setText(String.format("%.7f", location.getLatitude()));
+//            lngTextView.setText(String.format("%.7f", location.getLongitude()));
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
+
+
+    private void setupLocation() {
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+
+
+    }   // setupLocation
 }//Main Class

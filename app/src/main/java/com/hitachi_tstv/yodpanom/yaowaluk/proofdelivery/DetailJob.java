@@ -208,7 +208,8 @@ public class DetailJob extends AppCompatActivity implements View.OnClickListener
 
                 break;
             case R.id.button7:
-
+                Intent intentSign = new Intent(DetailJob.this, DegitalSignatureActivity.class);
+                startActivity(intentSign);
                 break;
             case R.id.button8:
                 Intent callIntent = new Intent(Intent.ACTION_CALL);

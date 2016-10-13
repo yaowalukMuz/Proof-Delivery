@@ -19,7 +19,7 @@ public class MyConstant {
     private String messagePasswordFalse = "กรุณาลองใหม่ Passwordผิด";
     private String urlDataWhereDriverIdanDate = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlanDtl.php";
     private String urlDetailWherePlanId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl1.php";
-    private String urlArrivalGPS = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateArrivalFromDriver.php";
+    private String urlArrivalGPS = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateArrivalFromDriver";
 
     public String getUrlArrivalGPS() {
         return urlArrivalGPS;

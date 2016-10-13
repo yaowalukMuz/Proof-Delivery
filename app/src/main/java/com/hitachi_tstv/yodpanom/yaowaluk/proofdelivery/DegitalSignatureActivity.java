@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -17,6 +18,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class DegitalSignatureActivity extends AppCompatActivity {
     //Explicit
@@ -27,6 +35,13 @@ public class DegitalSignatureActivity extends AppCompatActivity {
     private View view;
     DrawingView dv;
     private Paint mPaint;
+    Bitmap bitmap;
+    File file;
+
+    // Creating Separate Directory for saving Generated Images
+    String DIRECTORY = Environment.getExternalStorageDirectory().getPath() + "/DigitSign/";
+    String pic_name = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+    String StoredPath = DIRECTORY + pic_name + ".png";
 
 
     @Override
@@ -40,10 +55,18 @@ public class DegitalSignatureActivity extends AppCompatActivity {
         clearButton = (Button) findViewById(R.id.button9);
         saveButton.setEnabled(false);
         //
-        //mContent.addView();
 
+
+        // Method to create Directory, if the Directory doesn't exists
+        file = new File(DIRECTORY);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+
+
+
+        // Drawing signature
         dv = new DrawingView(this);
-       // setContentView(dv);
         mContent.addView(dv, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         saveButton.setEnabled(false);
         mPaint = new Paint();
@@ -55,7 +78,25 @@ public class DegitalSignatureActivity extends AppCompatActivity {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(6);
 
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v("log_tag", "Panel Saved");
+                view.setDrawingCacheEnabled(true);
+                dv.save(view, StoredPath);
 
+             //   Toast.makeText(getApplicationContext(),"Successfully saved",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v("log_tag", "Panel Cleared");
+                dv.clear();
+                saveButton.setEnabled(false);
+            }
+        });
 
 
       /*
@@ -68,7 +109,139 @@ public class DegitalSignatureActivity extends AppCompatActivity {
 
     }// Main Method
 
-   /* public class signature extends View{
+
+    public class DrawingView extends View{
+        public int width;
+        public  int height;
+        private Bitmap mBitmap;
+        private Canvas mCanvas;
+        private Path mPath;
+        private Paint mBitmapPaint;
+        Context context;
+        private Paint circlePaint;
+        private Path circlePath;
+
+
+
+
+        public DrawingView(Context context) {
+            super(context);
+            context = context;
+            mPath = new Path();
+            mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+            circlePaint = new Paint();
+            circlePath = new Path();
+            circlePaint.setAntiAlias(true);
+            circlePaint.setColor(Color.BLACK);
+            circlePaint.setStyle(Paint.Style.STROKE);
+            circlePaint.setStrokeJoin(Paint.Join.MITER);
+            circlePaint.setStrokeWidth(4f);
+
+        }
+        public void save(View v, String StoredPath) {
+            Log.v("log_tag", "Width: " + v.getWidth());
+            Log.v("log_tag", "Height: " + v.getHeight());
+            if (bitmap == null) {
+                bitmap = Bitmap.createBitmap(mContent.getWidth(), mContent.getHeight(), Bitmap.Config.RGB_565);
+            }
+            Canvas canvas = new Canvas(bitmap);
+            try {
+                // Output the file
+                FileOutputStream mFileOutStream = new FileOutputStream(StoredPath);
+                v.draw(canvas);
+
+                // Convert the output file to Image such as .png
+                bitmap.compress(Bitmap.CompressFormat.PNG, 90, mFileOutStream);
+                mFileOutStream.flush();
+                mFileOutStream.close();
+
+            } catch (Exception e) {
+                Log.v("log_tag", e.toString());
+            }
+
+        }
+
+        public void clear() {
+            mPath.reset();
+            invalidate();
+        }
+
+        @Override
+        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+            super.onSizeChanged(w, h, oldw, oldh);
+
+            mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            mCanvas = new Canvas(mBitmap);
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+
+            canvas.drawBitmap(mBitmap, 0, 0,mBitmapPaint);
+            canvas.drawPath(mPath, mPaint);
+            canvas.drawPath(circlePath, circlePaint);
+        }
+
+        private float mX,mY;
+        private static final float TOUCH_TOLERANCE = 4;
+
+
+        private void touch_start(float x,float y){
+            mPath.reset();
+            mPath.moveTo(x, y);
+            mX = x;
+            mY = y;
+
+        }
+
+        private void touch_move(float x ,float y){
+            float dx = Math.abs(x - mX);
+            float dy = Math.abs(y -mY);
+            if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
+                mPath.quadTo(mX, mY, (x + mX)/2, (y +mY)/2);
+                mX = x;
+                mY = y;
+
+                circlePath.reset();
+                circlePath.addCircle(mX, mY, 30, Path.Direction.CW);
+            }
+        }
+
+        private void touch_up(){
+            mPath.lineTo(mX, mY);
+            circlePath.reset();
+            // commit the path to our offscreen
+            mCanvas.drawPath(mPath,  mPaint);
+            // kill this so we don't double draw
+            mPath.reset();
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            float x = event.getX();
+            float y = event.getY();
+            saveButton.setEnabled(true);
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN :
+                    touch_start(x, y);
+                    invalidate();
+                    break;
+                case MotionEvent.ACTION_MOVE :
+                    touch_move(x, y);
+                    invalidate();
+                    break;
+                case MotionEvent.ACTION_UP :
+                    touch_up();
+                    invalidate();
+                    break;
+            }
+            return true;
+        }
+    }//Class DrawingView
+
+
+    /* public class signature extends View{
 
         private static final float STROKE_WIDTH = 5f;
         private static final float HALF_STROKE_WIDTH = STROKE_WIDTH/2;
@@ -162,105 +335,6 @@ public class DegitalSignatureActivity extends AppCompatActivity {
 
     }*/
 
-
-    public class DrawingView extends View{
-        public int width;
-        public  int height;
-        private Bitmap mBitmap;
-        private Canvas mCanvas;
-        private Path mPath;
-        private Paint mBitmapPaint;
-        Context context;
-        private Paint circlePaint;
-        private Path circlePath;
-
-        public DrawingView(Context context) {
-            super(context);
-            context = context;
-            mPath = new Path();
-            mBitmapPaint = new Paint(Paint.DITHER_FLAG);
-            circlePaint = new Paint();
-            circlePath = new Path();
-            circlePaint.setAntiAlias(true);
-            circlePaint.setColor(Color.BLACK);
-            circlePaint.setStyle(Paint.Style.STROKE);
-            circlePaint.setStrokeJoin(Paint.Join.MITER);
-            circlePaint.setStrokeWidth(4f);
-
-        }
-
-        @Override
-        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-            super.onSizeChanged(w, h, oldw, oldh);
-
-            mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-            mCanvas = new Canvas(mBitmap);
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-
-            canvas.drawBitmap(mBitmap, 0, 0,mBitmapPaint);
-            canvas.drawPath(mPath, mPaint);
-            canvas.drawPath(circlePath, circlePaint);
-        }
-
-        private float mX,mY;
-        private static final float TOUCH_TOLERANCE = 4;
-
-
-        private void touch_start(float x,float y){
-            mPath.reset();
-            mPath.moveTo(x, y);
-            mX = x;
-            mY = y;
-
-        }
-
-        private void touch_move(float x ,float y){
-            float dx = Math.abs(x - mX);
-            float dy = Math.abs(y -mY);
-            if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-                mPath.quadTo(mX, mY, (x + mX)/2, (y +mY)/2);
-                mX = x;
-                mY = y;
-
-                circlePath.reset();
-                circlePath.addCircle(mX, mY, 30, Path.Direction.CW);
-            }
-        }
-
-        private void touch_up(){
-            mPath.lineTo(mX, mY);
-            circlePath.reset();
-            // commit the path to our offscreen
-            mCanvas.drawPath(mPath,  mPaint);
-            // kill this so we don't double draw
-            mPath.reset();
-        }
-
-        @Override
-        public boolean onTouchEvent(MotionEvent event) {
-            float x = event.getX();
-            float y = event.getY();
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN :
-                    touch_start(x, y);
-                    invalidate();
-                    break;
-                case MotionEvent.ACTION_MOVE :
-                    touch_move(x, y);
-                    invalidate();
-                    break;
-                case MotionEvent.ACTION_UP :
-                    touch_up();
-                    invalidate();
-                    break;
-            }
-            return true;
-        }
-    }//Class DrawingView
 
 
 }//Main Class

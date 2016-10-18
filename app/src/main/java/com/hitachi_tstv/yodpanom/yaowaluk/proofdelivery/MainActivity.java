@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("Login", logingStrings);
                     intent.putExtra("PlanId", "");
                     intent.putExtra("Date", "");
+                    intent.putExtra("TruckNo", "");
                     startActivity(intent);
                     finish();
 

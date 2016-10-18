@@ -6,7 +6,7 @@ package com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery;
 
 public class MyConstant {
     //Explicit
-    private int iconAnInt = R.drawable.doremon48;// Image for icon 48x48
+    private int iconAnInt = R.drawable.warning48;// Image for icon 48x48
     private String titleHaveSpaceString = "มีช่องว่าง";
     private String messageHaveeSpaceString = "กรุณากรอกข้อมูลให้ครบทุกช่อง ค่ะ!";
 
@@ -20,6 +20,16 @@ public class MyConstant {
     private String urlDataWhereDriverIdanDate = "http://service.eternity.co.th/TmsPXD/app/CenterService/getPlanDtl.php";
     private String urlDetailWherePlanId = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl1.php";
     private String urlArrivalGPS = "http://service.eternity.co.th/TmsPXD/app/CenterService/updateArrivalFromDriver";
+    private String urlContainerList = "http://service.eternity.co.th/TmsPXD/app/CenterService/getTripDtl_Listview.php";
+    private String urlSaveImage = "http://service.eternity.co.th/TrackingInOut/upload.php";
+
+    public String getUrlSaveImage() {
+        return urlSaveImage;
+    }
+
+    public String getUrlContainerList() {
+        return urlContainerList;
+    }
 
     public String getUrlArrivalGPS() {
         return urlArrivalGPS;

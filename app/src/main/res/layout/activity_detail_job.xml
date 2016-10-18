@@ -11,61 +11,75 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.hitachi_tstv.yodpanom.yaowaluk.proofdelivery.DetailJob">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/livContainter"
-        android:layout_above="@+id/linBottomDetail"
-        android:layout_below="@+id/linTopDetail"
-        android:padding="@dimen/padding" />
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/linTopDetail"
-        android:padding="5dp">
+        android:background="@color/layout_bg1"
+        android:padding="@dimen/mini_margin">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/textView14"
             android:textSize="@dimen/h2"
-            android:padding="5dp" />
+            android:textStyle="normal|bold" />
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView15"
-            android:textSize="@dimen/h2"
-            android:padding="5dp" />
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/margin"
+            android:background="#64ffffff"
+            android:padding="@dimen/mini_margin">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView16"
-            android:textSize="@dimen/h2"
-            android:padding="5dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView15"
+                android:textSize="@dimen/h3"
+                android:layout_margin="@dimen/mini_margin" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView17"
-            android:textSize="@dimen/h2"
-            android:padding="5dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView16"
+                android:textSize="@dimen/h3"
+                android:layout_marginLeft="@dimen/mini_margin"
+                android:layout_marginRight="@dimen/mini_margin" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView18"
-            android:textSize="@dimen/h2"
-            android:padding="5dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView17"
+                android:textSize="@dimen/h3"
+                android:layout_margin="@dimen/mini_margin" />
 
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/button8"
-            android:background="@android:drawable/ic_menu_call" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button10"
+                    android:background="@android:drawable/ic_menu_call"
+                    android:layout_weight="1"
+                    android:layout_width="0dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/textView18"
+                    android:textSize="@dimen/h3"
+                    android:layout_marginLeft="@dimen/mini_margin"
+                    android:layout_marginRight="@dimen/mini_margin"
+                    android:layout_weight="5" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -79,29 +93,35 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/female48"
-                android:id="@+id/imageView3"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/male48"
-                android:id="@+id/imageView4"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/doremon48"
+                app:srcCompat="@drawable/picture"
+                android:background="@android:color/background_dark"
+                android:padding="2dp"
                 android:id="@+id/imageView5"
-                android:layout_weight="1" />
+                android:layout_margin="@dimen/mini_margin"
+                android:layout_width="@dimen/picture_width"
+                android:layout_height="@dimen/picture_height" />
 
+            <ImageView
+                app:srcCompat="@drawable/picture"
+                android:id="@+id/imageView4"
+                android:layout_margin="@dimen/mini_margin"
+                android:background="@android:color/background_dark"
+                android:padding="2dp"
+                android:layout_width="@dimen/picture_width"
+                android:layout_height="@dimen/picture_height" />
+
+            <ImageView
+                app:srcCompat="@drawable/picture"
+                android:id="@+id/imageView3"
+                android:layout_margin="@dimen/mini_margin"
+                android:background="@android:color/background_dark"
+                android:padding="2dp"
+                android:layout_width="@dimen/picture_width"
+                android:layout_height="@dimen/picture_height" />
         </LinearLayout>
 
         <LinearLayout
@@ -110,23 +130,18 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:text="Arrival"
+                android:text="Arrived"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/button4"
-                android:layout_weight="1"
-                android:background="@android:color/holo_green_light"
-                android:layout_margin="5dp" />
+                android:id="@+id/button7"
+                android:layout_weight="1" />
 
             <Button
-                android:text="Take Picture"
+                android:text="Take Img"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/button5"
-                android:layout_weight="1"
-                android:background="?attr/colorPrimary"
-                android:layout_margin="5dp" />
-
+                android:id="@+id/button6"
+                android:layout_weight="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -136,24 +151,27 @@
 
             <Button
                 android:text="Confirm"
-                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/button6"
+                android:id="@+id/button9"
                 android:layout_weight="1"
-                android:background="@android:color/holo_green_light"
-                android:layout_margin="5dp" />
+                android:layout_width="0dp" />
 
             <Button
                 android:text="Signature"
-                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/button7"
+                android:id="@+id/button8"
                 android:layout_weight="1"
-                android:background="?attr/colorPrimary"
-                android:layout_margin="5dp" />
-
+                android:layout_width="0dp" />
         </LinearLayout>
-
     </LinearLayout>
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/livContainer"
+        android:layout_below="@+id/linTopDetail"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:padding="@dimen/mini_margin"
+        android:layout_above="@+id/linBottomDetail" />
 </RelativeLayout>

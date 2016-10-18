@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -54,6 +55,7 @@ public class DegitalSignatureActivity extends AppCompatActivity {
         saveButton = (Button) findViewById(R.id.button10);
         clearButton = (Button) findViewById(R.id.button9);
         saveButton.setEnabled(false);
+        view = mContent;
         //
 
 
@@ -92,8 +94,9 @@ public class DegitalSignatureActivity extends AppCompatActivity {
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.v("log_tag", "Panel Cleared");
+                Log.v("13OctV3", "OnClick-----Clear Btn++++++++");
                 dv.clear();
+
                 saveButton.setEnabled(false);
             }
         });
@@ -138,7 +141,7 @@ public class DegitalSignatureActivity extends AppCompatActivity {
             circlePaint.setStrokeWidth(4f);
 
         }
-        public void save(View v, String StoredPath) {
+        public Bitmap save(View v, String StoredPath) {
             Log.v("log_tag", "Width: " + v.getWidth());
             Log.v("log_tag", "Height: " + v.getHeight());
             if (bitmap == null) {
@@ -156,12 +159,14 @@ public class DegitalSignatureActivity extends AppCompatActivity {
                 mFileOutStream.close();
 
             } catch (Exception e) {
-                Log.v("log_tag", e.toString());
+                Log.v("log_tag", "e Exception-----File->"+ e.toString());
             }
-
+        return null;
         }
 
         public void clear() {
+           // circlePath.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+            mCanvas.drawRect(0, 0, 0, 0, mPaint);
             mPath.reset();
             invalidate();
         }
@@ -241,99 +246,46 @@ public class DegitalSignatureActivity extends AppCompatActivity {
     }//Class DrawingView
 
 
-    /* public class signature extends View{
+    private class SynUploadImageTask extends AsyncTask<Void, Void, String> {
 
-        private static final float STROKE_WIDTH = 5f;
-        private static final float HALF_STROKE_WIDTH = STROKE_WIDTH/2;
-        private Paint paint = new Paint();
-        private Path path = new Path();
+        private Context context;
+        private  Bitmap mPhotoBitMap;
+        private String mUploadedFileName;
+        private UploadImageUtils uploadImageUtils;
 
-        private float lastTouchX;
-        private float lastTouchY;
-        private RectF dirtyRect = new RectF();
-
-
-        public signature(Context context, AttributeSet attrs) {
-            super(context, attrs);
-            paint.setAntiAlias(true);
-            paint.setColor(Color.WHITE);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeJoin(Paint.Join.ROUND);
-            paint.setStrokeWidth(STROKE_WIDTH);
+        public SynUploadImageTask(Context context, Bitmap mPhotoBitMap) {
+            this.context = context;
+            this.mPhotoBitMap = mPhotoBitMap;
         }
 
         @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            canvas.drawPath(path,paint);
+        protected String doInBackground(Void... params) {
+
+            String urlServer = "http://service.eternity.co.th/TrackingInOut/upload.php";
+            uploadImageUtils = new UploadImageUtils();
+
+            mUploadedFileName = uploadImageUtils.getRandomFileName();
+            final String result = uploadImageUtils.uploadFile(mUploadedFileName, urlServer, mPhotoBitMap);
+            Log.d("TAG", "Do in back after save:-->" + result);
+            return null;
         }
 
         @Override
-        public boolean onTouchEvent(MotionEvent event) {
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d("Call", "Success");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "Add Image Successful!!", Toast.LENGTH_SHORT).show();
+                }
+            });
 
-            float eventX = event.getX();
-            float eventY = event.getY();
-            saveButton.setEnabled(true);
 
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    path.moveTo(eventX, eventY);
-                    lastTouchX = eventX;
-                    lastTouchY = eventY;
-                    return true;
-
-                case MotionEvent.ACTION_MOVE:
-
-                case MotionEvent.ACTION_UP:
-
-                    resetDirtyRect(eventX, eventY);
-                    int historySize = event.getHistorySize();
-                    for (int i = 0; i < historySize; i++) {
-                        float historicalX = event.getHistoricalX(i);
-                        float historicalY = event.getHistoricalY(i);
-                        expandDirtyRect(historicalX, historicalY);
-                        path.lineTo(historicalX, historicalY);
-                    }
-                    path.lineTo(eventX, eventY);
-                    break;
-
-                default:
-                    Log.d("13OctV2","Ignored touch event: " + event.toString());
-                    return false;
-            }
-            invalidate((int) (dirtyRect.left - HALF_STROKE_WIDTH),
-                    (int) (dirtyRect.top - HALF_STROKE_WIDTH),
-                    (int) (dirtyRect.right + HALF_STROKE_WIDTH),
-                    (int) (dirtyRect.bottom + HALF_STROKE_WIDTH));
-
-            lastTouchX = eventX;
-            lastTouchY = eventY;
-
-            return true;
         }
+    }
 
-        private void expandDirtyRect(float historicalX, float historicalY) {
-            if (historicalX < dirtyRect.left) {
-                dirtyRect.left = historicalX;
-            } else if (historicalX > dirtyRect.right) {
-                dirtyRect.right = historicalX;
-            }
 
-            if (historicalY < dirtyRect.top) {
-                dirtyRect.top = historicalY;
-            } else if (historicalY > dirtyRect.bottom) {
-                dirtyRect.bottom = historicalY;
-            }
-        }
-
-        private void resetDirtyRect(float eventX, float eventY) {
-            dirtyRect.left = Math.min(lastTouchX, eventX);
-            dirtyRect.right = Math.max(lastTouchX, eventX);
-            dirtyRect.top = Math.min(lastTouchY, eventY);
-            dirtyRect.bottom = Math.max(lastTouchY, eventY);
-        }
-
-    }*/
 
 
 

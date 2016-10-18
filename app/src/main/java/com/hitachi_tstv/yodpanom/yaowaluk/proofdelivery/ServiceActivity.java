@@ -31,8 +31,9 @@ public class ServiceActivity extends AppCompatActivity {
     private MyConstant myConstant = new MyConstant();
     private String[] planDateStrings, cntStoreStrings, planIdStrings;
     private Boolean aBoolean = true;
-    private String[] workSheetStrings,storeNameStrings,planArrvalTimeStrings, planDtl2_idStrings;
-    private String driverChooseString, dateChooseString ;
+    private String[] workSheetStrings,storeNameStrings,planArrvalTimeStrings,
+            planDtl2_idStrings,truckIdStrings;
+    private String driverChooseString, dateChooseString ,truckString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +53,14 @@ public class ServiceActivity extends AppCompatActivity {
 
         loginStrings = getIntent().getStringArrayExtra("Login");
         driverChooseString = getIntent().getStringExtra("PlanId");
-       dateChooseString = getIntent().getStringExtra("Date");
+        dateChooseString = getIntent().getStringExtra("Date");
+        truckString = getIntent().getStringExtra("TruckNo");
 
         if (driverChooseString.length() != 0) {
             //From MainActivity
             aBoolean = false;
+        } else {
+            //From Main Activity
         }
 
 
@@ -123,22 +127,25 @@ public class ServiceActivity extends AppCompatActivity {
                 planDateStrings = new String[jsonArray.length()];
                 cntStoreStrings = new String[jsonArray.length()];
                 planIdStrings = new String[jsonArray.length()];
+                truckIdStrings = new String[jsonArray.length()];
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     planDateStrings[i] = jsonObject.getString("planDate");
                     cntStoreStrings[i] = jsonObject.getString("cnt_store");
                     planIdStrings[i] = jsonObject.getString("planId");
+                    truckIdStrings[i] = jsonObject.getString("truck_no");
                 }// for
 
                 if (aBoolean) {
                     //True : not click on button
                     jobListButton.setText("Job List : " + planDateStrings[0]);
-
+                    idDriverTextView.setText(truckIdStrings[0]);
                     CreateDetailList(planIdStrings[0]);
                 } else {
                     // false : From JobListView
                     jobListButton.setText("Job List : " + dateChooseString);
+                    idDriverTextView.setText(truckString);
                     CreateDetailList(driverChooseString);
                 }
 
@@ -151,6 +158,7 @@ public class ServiceActivity extends AppCompatActivity {
                         intent.putExtra("Store", cntStoreStrings);
                         intent.putExtra("PlanId", planIdStrings);
                         intent.putExtra("Login", loginStrings);
+                        intent.putExtra("TruckNo", truckIdStrings);
                         startActivity(intent);
                         finish();
                     }

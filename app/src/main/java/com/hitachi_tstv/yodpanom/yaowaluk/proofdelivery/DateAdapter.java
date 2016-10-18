@@ -51,8 +51,8 @@ public class DateAdapter extends BaseAdapter{
 
         //ShowView
 
-        dateTextView.setText("Date :" + planIdStrings[position]);
-        storeTextView.setText("Amt Sto");
+        dateTextView.setText("Date :" + dateStrings[position]);
+        storeTextView.setText("Store " + storeStrings[position] + " place");
 
 
         return view;
